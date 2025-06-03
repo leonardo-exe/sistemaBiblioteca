@@ -233,26 +233,73 @@ void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lis
 	free(cab1);
 	free(cab2);
 	free(cab3);
-	LIVRO* aux1 = lista1->prox;
-	while (aux1 != NULL)
-	{
+	if (vaziaL(lista1))
 		free(lista1);
-		lista1 = aux1;
-		aux1 = aux1->prox;
+	else {
+		LIVRO* aux1 = lista1->prox;
+		while (aux1 != NULL)
+		{
+			free(lista1);
+			lista1 = aux1;
+			aux1 = aux1->prox;
+		}
 	}
-	USUARIO* aux2 = lista2->prox;
-	while (aux2 != NULL)
-	{
+	if (vaziaU(lista2))
 		free(lista2);
-		lista2 = aux2;
-		aux2 = aux2->prox;
+	else {
+		USUARIO* aux2 = lista2->prox;
+		while (aux2 != NULL)
+		{
+			free(lista2);
+			lista2 = aux2;
+			aux2 = aux2->prox;
+		}
 	}
-	EMPRESTIMO* aux3 = lista3->prox;
-	while (aux3 != NULL)
-	{
+	if (vaziaE(lista3))
 		free(lista3);
-		lista3 = aux3;
-		aux3 = aux3->prox;
+	else {
+		EMPRESTIMO* aux3 = lista3->prox;
+		while (aux3 != NULL)
+		{
+			free(lista3);
+			lista3 = aux3;
+			aux3 = aux3->prox;
+		}
 	}
 	printf("Memoria liberada!\n");
+}
+void gravabin(CABECALHO* cab, void* lista, char* arquivo)
+{
+	FILE* arq = fopen(arquivo, "wb");
+	if (!arq) return;
+	fseek(arq, 0, SEEK_SET);
+	fwrite(cab, sizeof(CABECALHO), 1, arq);
+	if (arquivo[0] == 'l') 
+	{
+		LIVRO* aux = lista;
+		while (aux->prox != NULL)
+		{
+			fwrite(&aux->arquivo, sizeof(LIVRO_BIN), 1, arq);
+			aux = aux->prox;
+		}
+	}
+	if (arquivo[0] == 'u') 
+	{
+		USUARIO* aux = lista;
+		while (aux->prox != NULL)
+		{
+			fwrite(&aux->arquivo, sizeof(USUARIO_BIN), 1, arq);
+			aux = aux->prox;
+		}
+	}
+	if (arquivo[0] == 'e')
+	{
+		EMPRESTIMO* aux = lista;
+		while (aux->prox != NULL)
+		{
+			fwrite(&aux->arquivo, sizeof(EMPRESTIMO_BIN), 1, arq);
+			aux = aux->prox;
+		}
+	}
+
 }

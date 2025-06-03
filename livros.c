@@ -95,21 +95,14 @@ int totalLivros(LIVRO* lista)
 		return 0;
 	return 1 + totalLivros(lista->prox);
 }
-void livroRepetido(LIVRO** lista, CABECALHO** cab, char* titulo, int edicao, int quantia)
+int livrosRepetidos(LIVRO* lista, char* titulo, char* autor, int edicao, int ano, int quantia)
 {
-	if (vaziaL(*lista) || *lista == NULL)
-		return;
-	LIVRO* aux = *lista;
-	while (aux->prox != NULL)
+	if (lista == NULL || vaziaL(lista))
+		return 0;
+	if (!strcmp(lista->arquivo.informacoes.titulo, titulo) && !strcmp(lista->arquivo.informacoes.autor, autor) && lista->arquivo.informacoes.edicao == edicao, lista->arquivo.informacoes.ano == ano)
 	{
-		if (!strcmp(aux->arquivo.informacoes.titulo, titulo) && aux->arquivo.informacoes.edicao == edicao)
-		{
-			INFO inf = aux->arquivo.informacoes;
-			inf.qtdExemplares += quantia;
-			aux->arquivo.informacoes.qtdExemplares = -1;
-			*lista = cadastrarLivro(&*cab, *lista, inf);
-			break;
-		}
-		aux = aux->prox;
+		lista->arquivo.informacoes.qtdExemplares += quantia;
+		return 1;
 	}
+	return livrosRepetidos(lista->prox, titulo, autor, edicao, ano, quantia);
 }

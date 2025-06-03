@@ -10,6 +10,16 @@ int main()
 		scanf("%d", &n);
 		if (n)
 		{
+			/*if (!isdigit(n))
+			{
+				printf("!!!!!!!!so pode entrar com numeros!!!!!!!!\n");
+				break;
+			}*/
+			if (n > 3 || n < 0)
+			{
+				printf("!!!!!!!!Digite algo valido!!!!!!!!\n");
+				break;
+			}
 			CABECALHO* cabL = n == 1 ? criaCabecalho('L', 'S') : criaCabecalho('L', 'N'),
 				* cabU = n == 1 ? criaCabecalho('U', 'S') : criaCabecalho('U', 'N'),
 				* cabE = n == 1 ? criaCabecalho('E', 'S') : criaCabecalho('E', 'N');
@@ -78,8 +88,12 @@ int main()
 					scanf("%d", &livro.ano);
 					printf("Digite a quantidade de livros adquirida:\n");
 					scanf("%d", &livro.qtdExemplares);
-					livroRepetido(&listaLivros, &cabL, livro.titulo, livro.edicao, livro.qtdExemplares);
-					listaLivros = cadastrarLivro(&cabL, listaLivros, livro);
+					if (!livrosRepetidos(listaLivros, livro.titulo, livro.autor, livro.edicao, livro.ano, livro.qtdExemplares))
+						listaLivros = cadastrarLivro(&cabL, listaLivros, livro);
+					else {
+						printf("livro repetido, sera adicionado outro exemplar\n");
+						gravabin(cabL, listaLivros, "livros.bin");
+					}
 					break;
 				}
 				case 3:
@@ -129,7 +143,7 @@ int main()
 					scanf("%d", &codigou);
 					printf("Digite o codigo do livro:\n");
 					scanf("%d", &codigol);
-					listaEmprestimo = emprestar(&cabE, codigou, codigol, listaEmprestimo);
+					listaEmprestimo = emprestar(&cabE, codigou, codigol, listaEmprestimo, listaUsuarios, listaLivros);
 					break;
 				}
 				case 7:
@@ -139,7 +153,7 @@ int main()
 					scanf("%d", &codigoU);
 					printf("Digite o codigo do livro:\n");
 					scanf("%d", &codigoL);
-					devolver(codigoU, codigoL, &listaEmprestimo);
+					devolver(codigoU, codigoL, &listaEmprestimo, cabE);
 					break;
 				}
 				default: printf("Digite um numero valido!!!\n");

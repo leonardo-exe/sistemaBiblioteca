@@ -35,9 +35,33 @@ static void gravaBin(CABECALHO cab, EMPRESTIMO_BIN estrutura)
 	fwrite(&estrutura, sizeof(EMPRESTIMO_BIN), 1, bin);
 	fclose(bin);
 }
-//registra um emprestimo de livro
-EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO* listaE)
+static int usuarioExiste(USUARIO* lista, int codigo)
 {
+	if (lista == NULL || vaziaU(lista))
+	{
+		printf("nao eh possivel registrar emprestimo para um usuario nao cadastrado\n");
+		return 0;
+	}
+	if (lista->arquivo.codigo == codigo)
+		return 1;
+	return usuarioExiste(lista->prox, codigo);
+}
+static int livroExiste(LIVRO* lista, int codigo)
+{
+	if (lista == NULL || vaziaL(lista))
+	{
+		printf("nao eh possivel registrar emprestimo de um livro nao cadastrado\n");
+		return 0;
+	}
+	if (lista->arquivo.informacoes.codigo == codigo)
+		return 1;
+	return livroExiste(lista->prox, codigo);
+}
+//registra um emprestimo de livro
+EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO* listaE, USUARIO* listaU, LIVRO* listaL)
+{
+	if (!(usuarioExiste(listaU, codUsuario) && livroExiste(listaL, codLivro)))
+		return NULL;
 	EMPRESTIMO* novoEmprestimo = (EMPRESTIMO*)malloc(sizeof(EMPRESTIMO));
 	if (!novoEmprestimo)
 		return NULL;
@@ -72,20 +96,22 @@ EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* em
 	return novoEmprestimo;
 }
 //registra data de devolução
-void devolver(int codUsuario, int codLivro, EMPRESTIMO** lista)
+void devolver(int codUsuario, int codLivro, EMPRESTIMO** listaE, CABECALHO* cab)
 {
-	if (*lista == NULL)
-		return;
-	if (vaziaE(*lista))
-		return;
-	if ((*lista)->arquivo.codLivro == codLivro && (*lista)->arquivo.codUsuario == codUsuario) {
-		char* data = obterData();
-		strcpy((*lista)->arquivo.dataDevolucao, data);
-		free(data);
-		printf("Devolucao registrada!\n");
+	if (*listaE == NULL || vaziaE(*listaE))
+	{
+		printf("nao existe registro de empretimo para esta pessoa ou deste livro\n");
 		return;
 	}
-	devolver(codUsuario, codLivro, &(*lista)->prox);
+	if ((*listaE)->arquivo.codLivro == codLivro && (*listaE)->arquivo.codUsuario == codUsuario) {
+		char* data = obterData();
+		strcpy((*listaE)->arquivo.dataDevolucao, data);
+		free(data);
+		printf("Devolucao registrada!\n");
+		gravabin(cab, *listaE, "emprestimos.bin");
+		return;
+	}
+	devolver(codUsuario, codLivro, &(*listaE)->prox, cab);
 }
 //imprime todos os empréstimos na tela
 void listarEmprestimos(EMPRESTIMO* lista)
