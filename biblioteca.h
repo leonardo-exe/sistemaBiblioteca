@@ -161,7 +161,7 @@ EMPRESTIMO* criarListaEmprestimo();
 //entrada: endereço da estrutura cabeçalho do arquivo emprestimo.bin, dois inteiros representando respectivamente o usuario e o livro,
 //e os respectivos endereços das cabeças das listas de livros, usuarios e emprestimos
 //retorno: ponteiro para a nova cabeça da lista de empréstimos
-EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO* listaE);
+EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO* listaE, USUARIO* listaU, LIVRO* listaL);
 //registra um empréstimo na lista, recebido de registro em um arquivo txt
 //pré-condição: existir uma lista de livros e de usuários com itens e uma de emprestimo inicializada
 //pós-condição: é adicionado um empréstimo na cabeça da lista
@@ -174,7 +174,7 @@ EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* em
 //pós-condição: adiciona uma data de devolução ao livro especificado
 //entrada: dois inteiros que representam respectivamente o código do usuário e do livro e o endereço da cabeça da lista de empréstimos
 //retorno: nenhum
-void devolver(int codUsuario, int codLivro, EMPRESTIMO** lista);
+void devolver(int codUsuario, int codLivro, EMPRESTIMO** listaE, CABECALHO* cab);
 //imprime todos os dados de empréstimo registrados
 //pré-condição: deve existir uma lista de empréstimos não vazia
 //pós-condição: nenhuma
@@ -201,8 +201,8 @@ void carregaArquivobin(CABECALHO** cab1, CABECALHO** cab2, CABECALHO** cab3, LIV
 char* obterData();
 //função que libera toda a memoria alocada
 void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lista1, USUARIO* lista2, EMPRESTIMO* lista3);
-//caso seja um livro repetido, incrementa o a quantia de exemplares
-//pré-condição: deve existir uma lista
-//pós-condição: caso o livro já exista, incrementará um exemplar no original
-void livroRepetido(LIVRO** lista, CABECALHO** cab, char* titulo, int edicao, int quantia);
+//retorna 1 caso exista livros repitidos, ou 0 caso contrário
+int livrosRepetidos(LIVRO* lista, char* titulo, char* autor, int edicao, int ano, int quantia);
+//grava toda a lista no arquivo .bin, será usada quando um valor for atualizado
+void gravabin(CABECALHO* cab, void* lista, char* arquivo);
 #endif
