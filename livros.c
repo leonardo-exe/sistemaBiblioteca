@@ -26,8 +26,6 @@ static void gravaBin(CABECALHO cab, LIVRO_BIN estrutura)
 //adciona elementos na cabeça da lista, atualiza o cabeçalho, e grava no arquivo .bin
 LIVRO* cadastrarLivro(CABECALHO** cab, LIVRO* lista, INFO info)
 {
-	if (vaziaL(lista)) 
-		return lista;
 	LIVRO* novoLivro = (LIVRO*)malloc(sizeof(LIVRO));
 	if (!novoLivro) 
 		return NULL;
@@ -37,12 +35,14 @@ LIVRO* cadastrarLivro(CABECALHO** cab, LIVRO* lista, INFO info)
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(LIVRO_BIN);
 	gravaBin(**cab, novoLivro->arquivo);
-	printf("livro adicionado a lista!\n");
+	printf("...\n");
 	return novoLivro;
 }
 //funcao que imprime o livro, separada apenas para melhor organizacao e reaproveitamento
 static void printLivro(LIVRO livro)
 {
+	if (livro.arquivo.informacoes.qtdExemplares == -1)
+		return;
 	printf("----------\n");
 	printf("Codigo: %d\nTitulo: %s\nAutor: %s\nEditora: %s\nEdicao: %d\nAno: %d\nExemplares: %d\n",
 		livro.arquivo.informacoes.codigo,
@@ -94,4 +94,22 @@ int totalLivros(LIVRO* lista)
 	if (vaziaL(lista))
 		return 0;
 	return 1 + totalLivros(lista->prox);
+}
+void livroRepetido(LIVRO** lista, CABECALHO** cab, char* titulo, int edicao, int quantia)
+{
+	if (vaziaL(*lista) || *lista == NULL)
+		return;
+	LIVRO* aux = *lista;
+	while (aux->prox != NULL)
+	{
+		if (!strcmp(aux->arquivo.informacoes.titulo, titulo) && aux->arquivo.informacoes.edicao == edicao)
+		{
+			INFO inf = aux->arquivo.informacoes;
+			inf.qtdExemplares += quantia;
+			aux->arquivo.informacoes.qtdExemplares = -1;
+			*lista = cadastrarLivro(&*cab, *lista, inf);
+			break;
+		}
+		aux = aux->prox;
+	}
 }

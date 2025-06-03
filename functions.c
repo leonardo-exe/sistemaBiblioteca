@@ -29,7 +29,7 @@ int vaziaE(EMPRESTIMO* lista)
 //função que aloca e inicializa o cabeçalho, dependendo do parametro char recebido, 'l' para livros,
 //'u' para usuarios e 'e' para emprestimos, caso nao seja possivel alocar, ou o parametro for algo nao esperado, 
 //retornará NULL
-void* criaCabecalho(char tipo)
+void* criaCabecalho(char tipo, char bin)
 {
 	CABECALHO* cab = (CABECALHO*)malloc(sizeof(CABECALHO));
 	if (cab) {
@@ -49,7 +49,8 @@ void* criaCabecalho(char tipo)
 	else {
 		strcpy(nome, "");
 	}
-	criaBin(nome, cab);
+	if (bin == 'N')
+		criaBin(nome, cab);
 	return cab;
 }
 //função auxiliar para ler strings ignorando espaços no comeco e no final
@@ -141,8 +142,6 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 }//funções que cadastram sem gravar no .bin
 static LIVRO* cadastrarLivrobin(CABECALHO* cab, LIVRO* lista, INFO info)
 {
-	if (vaziaL(lista))
-		return lista;
 	LIVRO* novoLivro = (LIVRO*)malloc(sizeof(LIVRO));
 	if (!novoLivro)
 		return NULL;
@@ -215,18 +214,19 @@ void carregaArquivobin(CABECALHO** cab1, CABECALHO** cab2, CABECALHO** cab3, LIV
 	LIVRO_BIN aux1;
 	USUARIO_BIN aux2;
 	EMPRESTIMO_BIN aux3;
-	while (fread(&aux1, sizeof(LIVRO_BIN), 1, arquivo1) != EOF)
+	while (fread(&aux1, sizeof(LIVRO_BIN), 1, arquivo1))
 	{
 		*listaL = cadastrarLivrobin(*cab1, *listaL, aux1.informacoes);
 	}
-	while (fread(&aux2, sizeof(USUARIO_BIN), 1, arquivo2) != EOF)
+	while (fread(&aux2, sizeof(USUARIO_BIN), 1, arquivo2))
 	{
 		*listaU = cadastrarUsuariobin(*cab2, *listaU, aux2.codigo, aux2.nome);
 	}
-	while (fread(&aux3, sizeof(EMPRESTIMO_BIN), 1, arquivo3) != EOF)
+	while (fread(&aux3, sizeof(EMPRESTIMO_BIN), 1, arquivo3))
 	{
 		*listaE = emprestarbin(*cab3, aux3, *listaE);
 	}
+	printf("Arquivos binarios carregados para o programa!\n");
 }
 void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lista1, USUARIO* lista2, EMPRESTIMO* lista3)
 {

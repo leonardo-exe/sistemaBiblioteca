@@ -10,7 +10,9 @@ int main()
 		scanf("%d", &n);
 		if (n)
 		{
-			CABECALHO* cabL = criaCabecalho('L'), * cabU = criaCabecalho('U'), * cabE = criaCabecalho('E');
+			CABECALHO* cabL = n == 1 ? criaCabecalho('L', 'S') : criaCabecalho('L', 'N'),
+				* cabU = n == 1 ? criaCabecalho('U', 'S') : criaCabecalho('U', 'N'),
+				* cabE = n == 1 ? criaCabecalho('E', 'S') : criaCabecalho('E', 'N');
 			LIVRO* listaLivros = criaListaLivros();
 			USUARIO* listaUsuarios = criaListaUsuarios();
 			EMPRESTIMO* listaEmprestimo = criarListaEmprestimo();
@@ -76,6 +78,7 @@ int main()
 					scanf("%d", &livro.ano);
 					printf("Digite a quantidade de livros adquirida:\n");
 					scanf("%d", &livro.qtdExemplares);
+					livroRepetido(&listaLivros, &cabL, livro.titulo, livro.edicao, livro.qtdExemplares);
 					listaLivros = cadastrarLivro(&cabL, listaLivros, livro);
 					break;
 				}

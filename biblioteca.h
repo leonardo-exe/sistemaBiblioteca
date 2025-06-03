@@ -72,9 +72,9 @@ int vaziaE(EMPRESTIMO* lista);
 //cria uma estrutura cabecalho para o arquivo binario
 //pré-condição: nenhuma
 //pós-condição: cabecalho é alocado na memória e gravado no arquivo binário correspondente
-//entrada: uma letra minuscula representando qual arquivo estará sendo inicializado
+//entrada: uma letra maiuscula representando qual arquivo estará sendo inicializado (L, U, E), e outra dizendo se o arquivo .bin já existe ou nao (S, N)
 //retorno: um ponteiro sem tipo para a estrutura cabecalho correspondente 
-void* criaCabecalho(char tipo);
+void* criaCabecalho(char tipo, char bin);
 //cria uma lista vazia
 //pré-condição: nenhuma
 //pós-condição: lista é alocada na memória
@@ -201,4 +201,8 @@ void carregaArquivobin(CABECALHO** cab1, CABECALHO** cab2, CABECALHO** cab3, LIV
 char* obterData();
 //função que libera toda a memoria alocada
 void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lista1, USUARIO* lista2, EMPRESTIMO* lista3);
+//caso seja um livro repetido, incrementa o a quantia de exemplares
+//pré-condição: deve existir uma lista
+//pós-condição: caso o livro já exista, incrementará um exemplar no original
+void livroRepetido(LIVRO** lista, CABECALHO** cab, char* titulo, int edicao, int quantia);
 #endif

@@ -68,7 +68,7 @@ EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* em
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(EMPRESTIMO);
 	gravaBin(**cab, novoEmprestimo->arquivo);
-	printf("emprestimo cadastrado!\n");
+	printf("...\n");
 	return novoEmprestimo;
 }
 //registra data de devolução

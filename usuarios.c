@@ -36,7 +36,7 @@ USUARIO* cadastrarUsuario(CABECALHO** cab, USUARIO* lista, int cod, char* nome)
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(USUARIO);
 	gravaBin(**cab, novoUsuario->arquivo);
-	printf("usuario adicionado a lista!\n");
+	printf("...\n");
 	return novoUsuario;
 }
 //função auxiliar que imprime um usuário
@@ -74,7 +74,7 @@ void buscaNome(USUARIO* lista, char* titulo)
 		return;
 	if (!strcmp(lista->arquivo.nome, titulo))
 		printUsuario(lista->arquivo);
-	buscaUsuarioCod(lista->prox, titulo);
+	buscaNome(lista->prox, titulo);
 }
 int totalUsuarios(USUARIO* lista)
 {
