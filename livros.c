@@ -99,7 +99,7 @@ int livrosRepetidos(LIVRO* lista, char* titulo, char* autor, int edicao, int ano
 {
 	if (lista == NULL || vaziaL(lista))
 		return 0;
-	if (!strcmp(lista->arquivo.informacoes.titulo, titulo) && !strcmp(lista->arquivo.informacoes.autor, autor) && lista->arquivo.informacoes.edicao == edicao, lista->arquivo.informacoes.ano == ano)
+	if (!strcmp(lista->arquivo.informacoes.titulo, titulo) && !strcmp(lista->arquivo.informacoes.autor, autor) && lista->arquivo.informacoes.edicao == edicao && lista->arquivo.informacoes.ano == ano)
 	{
 		lista->arquivo.informacoes.qtdExemplares += quantia;
 		return 1;

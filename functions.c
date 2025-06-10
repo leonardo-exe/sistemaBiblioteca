@@ -24,6 +24,7 @@ int vaziaU(USUARIO* lista)
 //funcao que verifica se a lista é vazia
 int vaziaE(EMPRESTIMO* lista)
 {
+
 	return (lista->prox == NULL);
 }
 //função que aloca e inicializa o cabeçalho, dependendo do parametro char recebido, 'l' para livros,
@@ -117,7 +118,10 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			readString(informacoes.autor, arquivo, tipo);
 			readString(informacoes.editora, arquivo, tipo);
 			fscanf(arquivo, "%d%*c%d%*c%d%*c", &informacoes.edicao, &informacoes.ano, &informacoes.qtdExemplares);
-			*listaL = cadastrarLivro(&(*cab1), *listaL, informacoes);
+			if (!livrosRepetidos(*listaL, informacoes.titulo, informacoes.autor, informacoes.edicao, informacoes.ano, informacoes.qtdExemplares))
+				*listaL = cadastrarLivro(&(*cab1), *listaL, informacoes);
+			else 
+				gravabin(*cab1, *listaL, "livros.bin");
 		}
 		if (tipo == 'U')
 		{
@@ -125,7 +129,8 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			char nome[51];
 			fscanf(arquivo, "%d%*c", &codigo);
 			readString(nome, arquivo, tipo);
-			*listaU = cadastrarUsuario(&(*cab2), *listaU, codigo, nome);
+			if (!vaziaU(*listaU) || !usuariosRepetidos(*listaU, nome))
+				*listaU = cadastrarUsuario(&(*cab2), *listaU, codigo, nome);
 		}
 		if (tipo == 'E')
 		{
@@ -140,42 +145,31 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 	fclose(arquivo);
 	printf("Arquivo texto carregado para o programa\n");
 }//funções que cadastram sem gravar no .bin
-static LIVRO* cadastrarLivrobin(CABECALHO* cab, LIVRO* lista, INFO info)
+static LIVRO* crialivroBin(LIVRO* lista, LIVRO_BIN inf)
 {
 	LIVRO* novoLivro = (LIVRO*)malloc(sizeof(LIVRO));
 	if (!novoLivro)
 		return NULL;
-	novoLivro->arquivo.informacoes = info;
-	novoLivro->arquivo.prox = cab->cabeca;
 	novoLivro->prox = lista;
+	novoLivro->arquivo = inf;
 	return novoLivro;
 }
-static USUARIO* cadastrarUsuariobin(CABECALHO* cab, USUARIO* lista, int cod, char* nome)
+static USUARIO* criausuarioBin(USUARIO* lista, USUARIO_BIN inf)
 {
 	USUARIO* novoUsuario = (USUARIO*)malloc(sizeof(USUARIO));
 	if (!novoUsuario)
 		return NULL;
 	novoUsuario->prox = lista;
-	novoUsuario->arquivo.codigo = cod;
-	novoUsuario->arquivo.prox = cab->cabeca;
-	strcpy(novoUsuario->arquivo.nome, nome);
+	novoUsuario->arquivo = inf;
 	return novoUsuario;
 }
-static EMPRESTIMO* emprestarbin(CABECALHO* cab, EMPRESTIMO_BIN dados, EMPRESTIMO* listaE)
+static EMPRESTIMO* criaemprestimoBin(EMPRESTIMO* lista, EMPRESTIMO_BIN inf)
 {
 	EMPRESTIMO* novoEmprestimo = (EMPRESTIMO*)malloc(sizeof(EMPRESTIMO));
 	if (!novoEmprestimo)
 		return NULL;
-	novoEmprestimo->prox = listaE;
-	novoEmprestimo->arquivo.codLivro = dados.codLivro;
-	novoEmprestimo->arquivo.codUsuario = dados.codUsuario;
-	if (dados.dataDevolucao)
-		strcpy(novoEmprestimo->arquivo.dataDevolucao, dados.dataDevolucao);
-	else
-		strcpy(novoEmprestimo->arquivo.dataDevolucao, "-");
-	char* data = obterData();
-	strcpy(novoEmprestimo->arquivo.dataEmprestimo, data);
-	free(data);
+	novoEmprestimo->prox = lista;
+	novoEmprestimo->arquivo = inf;
 	return novoEmprestimo;
 }
 //carrega os dados de um arquivo binario
@@ -205,27 +199,40 @@ void carregaArquivobin(CABECALHO** cab1, CABECALHO** cab2, CABECALHO** cab3, LIV
 		fclose(arquivo2);
 		return;
 	}
-	fseek(arquivo1, 0, 0);
-	fseek(arquivo2, 0, 0);
-	fseek(arquivo3, 0, 0);
+	fseek(arquivo1, 0, SEEK_SET);
 	fread(*cab1, sizeof(CABECALHO), 1, arquivo1);
+	fseek(arquivo2, 0, SEEK_SET);
 	fread(*cab2, sizeof(CABECALHO), 1, arquivo2);
+	fseek(arquivo3, 0, SEEK_SET);
 	fread(*cab3, sizeof(CABECALHO), 1, arquivo3);
+	
+	fseek(arquivo1, (*cab1)->cabeca, SEEK_SET);
 	LIVRO_BIN aux1;
-	USUARIO_BIN aux2;
-	EMPRESTIMO_BIN aux3;
 	while (fread(&aux1, sizeof(LIVRO_BIN), 1, arquivo1))
 	{
-		*listaL = cadastrarLivrobin(*cab1, *listaL, aux1.informacoes);
+		*listaL = crialivroBin(*listaL, aux1);
+		if (aux1.prox == -1) break;
+		fseek(arquivo1, aux1.prox, SEEK_SET);
 	}
+
+	fseek(arquivo2, (*cab2)->cabeca, SEEK_SET);
+	USUARIO_BIN aux2;
 	while (fread(&aux2, sizeof(USUARIO_BIN), 1, arquivo2))
 	{
-		*listaU = cadastrarUsuariobin(*cab2, *listaU, aux2.codigo, aux2.nome);
+		*listaU = criausuarioBin(*listaU, aux2);
+		if (aux2.prox == -1) break;
+		fseek(arquivo2, aux2.prox, SEEK_SET);
 	}
+
+	fseek(arquivo3, (*cab3)->cabeca, SEEK_SET);
+	EMPRESTIMO_BIN aux3;
 	while (fread(&aux3, sizeof(EMPRESTIMO_BIN), 1, arquivo3))
 	{
-		*listaE = emprestarbin(*cab3, aux3, *listaE);
+		*listaE = criaemprestimoBin(*listaE, aux3);
+		if (aux3.prox == -1) break;
+		fseek(arquivo3, aux3.prox, SEEK_SET);
 	}
+
 	printf("Arquivos binarios carregados para o programa!\n");
 }
 void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lista1, USUARIO* lista2, EMPRESTIMO* lista3)

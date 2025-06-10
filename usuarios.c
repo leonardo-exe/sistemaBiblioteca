@@ -84,3 +84,13 @@ int totalUsuarios(USUARIO* lista)
 		return 0;
 	return 1 + totalUsuarios(lista->prox);
 }
+int usuariosRepetidos(USUARIO* lista, char* nome)
+{
+	if (lista == NULL)
+		return 0;
+	if (vaziaU(lista))
+		return 0;
+	if (!strcmp(lista->arquivo.nome, nome))
+		return 1;
+	return usuariosRepetidos(lista->prox, nome);
+}

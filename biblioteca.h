@@ -203,6 +203,8 @@ char* obterData();
 void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lista1, USUARIO* lista2, EMPRESTIMO* lista3);
 //retorna 1 caso exista livros repitidos, ou 0 caso contrário
 int livrosRepetidos(LIVRO* lista, char* titulo, char* autor, int edicao, int ano, int quantia);
+//retorna 1 caso exista usuarios repitidos, ou 0 caso contrário
+int usuariosRepetidos(USUARIO* lista, char* nome);
 //grava toda a lista no arquivo .bin, será usada quando um valor for atualizado
 void gravabin(CABECALHO* cab, void* lista, char* arquivo);
 #endif
