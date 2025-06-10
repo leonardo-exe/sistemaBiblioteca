@@ -68,6 +68,7 @@ EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO*
 	novoEmprestimo->prox = listaE;
 	novoEmprestimo->arquivo.codLivro = codLivro;
 	novoEmprestimo->arquivo.codUsuario = codUsuario;
+	novoEmprestimo->arquivo.prox = (*cab)->cabeca;
 	strcpy(novoEmprestimo->arquivo.dataDevolucao, "-");
 	char* data = obterData();
 	strcpy(novoEmprestimo->arquivo.dataEmprestimo, data);
@@ -87,6 +88,7 @@ EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* em
 	novoEmprestimo->prox = listaE;
 	novoEmprestimo->arquivo.codLivro = codLivro;
 	novoEmprestimo->arquivo.codUsuario = codUsuario;
+	novoEmprestimo->arquivo.prox = (*cab)->cabeca;
 	strcpy(novoEmprestimo->arquivo.dataDevolucao, devolucao);
 	strcpy(novoEmprestimo->arquivo.dataEmprestimo, emprestimo);
 	(*cab)->cabeca = (*cab)->topo;
