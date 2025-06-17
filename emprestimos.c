@@ -75,7 +75,7 @@ EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO*
 	free(data);
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(EMPRESTIMO_BIN);
-	gravaBin(**cab, novoEmprestimo->arquivo);
+	//gravaBin(**cab, novoEmprestimo->arquivo);
 	printf("emprestimo cadastrado!\n");
 	return novoEmprestimo;
 }
@@ -93,7 +93,7 @@ EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* em
 	strcpy(novoEmprestimo->arquivo.dataEmprestimo, emprestimo);
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(EMPRESTIMO_BIN);
-	gravaBin(**cab, novoEmprestimo->arquivo);
+	//gravaBin(**cab, novoEmprestimo->arquivo);
 	printf("...\n");
 	return novoEmprestimo;
 }
