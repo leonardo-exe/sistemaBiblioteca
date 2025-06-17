@@ -121,9 +121,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			readString(informacoes.editora, arquivo, tipo);
 			fscanf(arquivo, "%d%*c%d%*c%d%*c", &informacoes.edicao, &informacoes.ano, &informacoes.qtdExemplares);
 			if (!livrosRepetidos(*listaL, informacoes.titulo, informacoes.autor, informacoes.edicao, informacoes.ano, informacoes.qtdExemplares))
-				*listaL = cadastrarLivro(cab1, *listaL, informacoes);
-			else 
-				gravabin(*cab1, *listaL, "livros.bin");
+				*listaL = cadastrarLivro(*listaL, informacoes);
 		}
 		if (tipo == 'U')
 		{
@@ -132,7 +130,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			fscanf(arquivo, "%d%*c", &codigo);
 			readString(nome, arquivo, tipo);
 			if (!vaziaU(*listaU) || !usuariosRepetidos(*listaU, nome))
-				*listaU = cadastrarUsuario(cab2, *listaU, codigo, nome);
+				*listaU = cadastrarUsuario(*listaU, codigo, nome);
 		}
 		if (tipo == 'E')
 		{
@@ -141,7 +139,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			fscanf(arquivo, "%d%*c%d%*c", &codU, &codL);
 			readString(emprestimo, arquivo, 'L');
 			readString(devolucao, arquivo, tipo);
-			*listaE = emprestartxt(cab3, codU, codL, emprestimo, devolucao, *listaE);
+			*listaE = emprestartxt(codU, codL, emprestimo, devolucao, *listaE);
 		}
 	}
 	fclose(arquivo);
@@ -285,37 +283,48 @@ void gravabin(CABECALHO* cab, void* lista, char* arquivo)
 		printf("nao foi possivel abrir arquivo %s\n", arquivo);
 		return;
 	}
-	fseek(arq, 0, SEEK_SET);
-	fwrite(cab, sizeof(CABECALHO), 1, arq);
+	cab->cabeca = -1;
+	cab->topo = sizeof(CABECALHO);
+	fseek(arq, cab->topo, SEEK_SET);
 	if (arquivo[0] == 'l') 
 	{
 		LIVRO* aux = lista;
-		while (aux->prox != NULL)
+		while (!vaziaL(aux))
 		{
+			aux->arquivo.prox = cab->cabeca;
 			fwrite(&aux->arquivo, sizeof(LIVRO_BIN), 1, arq);
-			fseek(arq, aux->arquivo.prox, SEEK_SET);
+			cab->cabeca = cab->topo;
+			cab->topo += sizeof(LIVRO_BIN);
+			fseek(arq, cab->topo, SEEK_SET);
 			aux = aux->prox;
 		}
 	}
 	if (arquivo[0] == 'u') 
 	{
-		USUARIO* aux = lista;
-		while (aux->prox != NULL)
+		USUARIO * aux = lista;
+		while (!vaziaU(aux))
 		{
+			aux->arquivo.prox = cab->cabeca;
 			fwrite(&aux->arquivo, sizeof(USUARIO_BIN), 1, arq);
-			fseek(arq, aux->arquivo.prox, SEEK_SET);
+			cab->cabeca = cab->topo;
+			cab->topo += sizeof(USUARIO_BIN);
+			fseek(arq, cab->topo, SEEK_SET);
 			aux = aux->prox;
 		}
 	}
 	if (arquivo[0] == 'e')
 	{
 		EMPRESTIMO* aux = lista;
-		while (aux->prox != NULL)
+		while (!vaziaE(aux))
 		{
+			aux->arquivo.prox = cab->cabeca;
 			fwrite(&aux->arquivo, sizeof(EMPRESTIMO_BIN), 1, arq);
-			fseek(arq, aux->arquivo.prox, SEEK_SET);
+			cab->cabeca = cab->topo;
+			cab->topo += sizeof(EMPRESTIMO_BIN);
+			fseek(arq, cab->topo, SEEK_SET);
 			aux = aux->prox;
 		}
 	}
-
+	fseek(arq, 0, 0);
+	fwrite(cab, sizeof(CABECALHO), 1, arq);
 }

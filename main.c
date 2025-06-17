@@ -65,7 +65,7 @@ int main()
 						gravabin(cabU, listaUsuarios, "usuarios.bin");
 						gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 						liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
-						return;
+						return 0;
 					}
 					break;
 				}
@@ -98,7 +98,7 @@ int main()
 							gravabin(cabU, listaUsuarios, "usuarios.bin");
 							gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 							liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
-							return;
+							return 0;
 						}
 						break;
 					}
@@ -144,10 +144,9 @@ int main()
 				printf("Digite a quantidade de livros adquirida:\n");
 				scanf("%d%*c", &livro.qtdExemplares);
 				if (!livrosRepetidos(listaLivros, livro.titulo, livro.autor, livro.edicao, livro.ano, livro.qtdExemplares))
-					listaLivros = cadastrarLivro(&cabL, listaLivros, livro);
+					listaLivros = cadastrarLivro(listaLivros, livro);
 				else {
 					printf("livro repetido, sera adicionado outro exemplar\n");
-					gravabin(cabL, listaLivros, "livros.bin");
 				}
 				break;
 			}
@@ -173,7 +172,7 @@ int main()
 							gravabin(cabU, listaUsuarios, "usuarios.bin");
 							gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 							liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
-							return;
+							return 0;
 						}
 						break;
 					}
@@ -214,12 +213,54 @@ int main()
 				printf("Digite o nome do novo usuario:\n");
 				scanf(" %[^\n]%*c", nome);
 				if (!usuariosRepetidos(listaUsuarios, nome))
-					listaUsuarios = cadastrarUsuario(&cabU, listaUsuarios, codigo, nome);
+					listaUsuarios = cadastrarUsuario(listaUsuarios, codigo, nome);
 				else 
 					printf("Usuario ja existe no sistema\n");
 				break;
 			}
-			case 5: listarEmprestimos(listaEmprestimo); break;
+			case 5: 
+			{
+				printf("1-todos os emprestimos\n2-buscar com codigo de usuario\n");
+				int num;
+				while (1)
+				{
+					char buffer[100];
+					fgets(buffer, 99, stdin);
+					char digito[1] = { buffer[0] };
+					if (!isdigit(buffer[0]) || atoi(digito) > 4 || atoi(digito) < 0)
+					{
+						printf("!!!!!Digite um numero valido!!!!!\n");
+						continue;
+					}
+					else
+					{
+						num = atoi(digito);
+						if (!n) {
+							gravabin(cabL, listaLivros, "livros.bin");
+							gravabin(cabU, listaUsuarios, "usuarios.bin");
+							gravabin(cabE, listaEmprestimo, "emprestimos.bin");
+							liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
+							return 0;
+						}
+						break;
+					}
+				}
+				switch (num)
+				{
+				case 0: break;
+				case 1: listarEmprestimos(listaEmprestimo, listaLivros, listaUsuarios); break;
+				case 2: 
+				{
+					int n;
+					printf("Digite o codigo do usuario:\n");
+					scanf("%d%*c", &n);
+					listaEmprestimosPorUsuario(listaEmprestimo, listaLivros, listaUsuarios, n);
+					break;
+				}
+				default: printf("Digite um numero valido!!!!\n");
+				}
+				break;
+			}
 			case 6:
 			{
 				int codigou, codigol;
@@ -227,7 +268,7 @@ int main()
 				scanf("%d%*c", &codigou);
 				printf("Digite o codigo do livro:\n");
 				scanf("%d%*c", &codigol);
-				listaEmprestimo = emprestar(&cabE, codigou, codigol, listaEmprestimo, listaUsuarios, listaLivros);
+				listaEmprestimo = emprestar(codigou, codigol, listaEmprestimo, listaUsuarios, listaLivros);
 				break;
 			}
 			case 7:

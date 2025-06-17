@@ -87,7 +87,7 @@ LIVRO* criaListaLivros();
 //entrada: endereço para a estrutura de cabeçalho do respectivo arquivo binário onde a estrutura será gravada,
 //endereço da estrutura cabeça de uma lista inicializada e uma estrutura do tipo INFO que guarda as especificações do livro
 //retorno: endereço da estrutura adicionada e que representa a nova cabeça da lista
-LIVRO* cadastrarLivro(CABECALHO** cab, LIVRO* lista, INFO info);
+LIVRO* cadastrarLivro(LIVRO* lista, INFO info);
 //imprime as informações de todos os livros da lista
 //pré-condição: a lista não pode ser vazia
 //pós-condição: nenhuma
@@ -124,7 +124,7 @@ USUARIO* criaListaUsuarios();
 //entrada: endereço para a estrutura de cabeçalho do respectivo arquivo binário onde a estrutura será gravada, 
 //ponteiro para a cabeça da lista, inteiro único que representa o usuario e string que representa seu nome
 //retorno: endereço da estrutura adicionada e que representa a nova cabeça da lista
-USUARIO* cadastrarUsuario(CABECALHO** cab, USUARIO* lista, int cod, char* nome);
+USUARIO* cadastrarUsuario(USUARIO* lista, int cod, char* nome);
 //imprime as informações de todos os usuarios da lista
 //pré-condição: a lista não pode ser vazia
 //pós-condição: nenhuma
@@ -161,14 +161,14 @@ EMPRESTIMO* criarListaEmprestimo();
 //entrada: endereço da estrutura cabeçalho do arquivo emprestimo.bin, dois inteiros representando respectivamente o usuario e o livro,
 //e os respectivos endereços das cabeças das listas de livros, usuarios e emprestimos
 //retorno: ponteiro para a nova cabeça da lista de empréstimos
-EMPRESTIMO* emprestar(CABECALHO** cab, int codUsuario, int codLivro, EMPRESTIMO* listaE, USUARIO* listaU, LIVRO* listaL);
+EMPRESTIMO* emprestar(int codUsuario, int codLivro, EMPRESTIMO* listaE, USUARIO* listaU, LIVRO* listaL);
 //registra um empréstimo na lista, recebido de registro em um arquivo txt
 //pré-condição: existir uma lista de livros e de usuários com itens e uma de emprestimo inicializada
 //pós-condição: é adicionado um empréstimo na cabeça da lista
 //entrada: endereço da estrutura cabeçalho do arquivo emprestimo.bin, dois inteiros representando respectivamente o usuario e o livro,
 //e duas strings representando as datas de emprestimo e devolucao e os respectivos endereços das cabeças das listas de livros, usuarios e emprestimos
 //retorno: ponteiro para a nova cabeça da lista de empréstimos
-EMPRESTIMO* emprestartxt(CABECALHO** cab, int codUsuario, int codLivro, char* emprestimo, char* devolucao, EMPRESTIMO* listaE);
+EMPRESTIMO* emprestartxt(int codUsuario, int codLivro, char* emprestimo, char* devolucao, EMPRESTIMO* listaE);
 //registra a devolução de um livro já emprestado
 //pré-condição: existir uma lista de livros de usuarios e de emprestimo com itens
 //pós-condição: adiciona uma data de devolução ao livro especificado
@@ -178,9 +178,11 @@ void devolver(int codUsuario, int codLivro, EMPRESTIMO** listaE, CABECALHO* cab)
 //imprime todos os dados de empréstimo registrados
 //pré-condição: deve existir uma lista de empréstimos não vazia
 //pós-condição: nenhuma
-//entrada: endereço para a cabeça da lista de empréstimos
+//entrada: endereço para a cabeça da lista de empréstimos de livros e de usuarios
 //retorno: nenhum
-void listarEmprestimos(EMPRESTIMO* lista);
+void listarEmprestimos(EMPRESTIMO* lista, LIVRO* lista2, USUARIO* lista3);
+//imprime todos os emprestimos de um determinado usuario
+void listaEmprestimosPorUsuario(EMPRESTIMO* lista, LIVRO* lista2, USUARIO* lista3, int codigo);
 //carrega para o programa os dados de um arquivo .txt 
 //pré-condição: deve existir um arquivo .txt na formatação correta para leitura, 
 //e as listas de livros, usuarios e emprestimos e o cabeçalho inicializados
