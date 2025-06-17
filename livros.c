@@ -9,32 +9,14 @@ LIVRO* criaListaLivros()
 	novaLista->prox = NULL;
 	return novaLista;
 }
-//função que grava no arquivo .bin
-static void gravaBin(CABECALHO cab, LIVRO_BIN estrutura)
-{
-	FILE* bin = fopen("livros.bin", "r+b");
-	if (!bin) {
-		printf("erro ao abrir arquivo 'livros.bin'\n");
-		return;
-	}
-	fseek(bin, 0, SEEK_SET);
-	fwrite(&cab, sizeof(CABECALHO), 1, bin);
-	fseek(bin, cab.cabeca, SEEK_SET);
-	fwrite(&estrutura, sizeof(LIVRO_BIN), 1, bin);
-	fclose(bin);
-}
 //adciona elementos na cabeça da lista, atualiza o cabeçalho, e grava no arquivo .bin
-LIVRO* cadastrarLivro(CABECALHO** cab, LIVRO* lista, INFO info)
+LIVRO* cadastrarLivro(LIVRO* lista, INFO info)
 {
 	LIVRO* novoLivro = (LIVRO*)malloc(sizeof(LIVRO));
 	if (!novoLivro) 
 		return NULL;
 	novoLivro->arquivo.informacoes = info;
-	novoLivro->arquivo.prox = (*cab)->cabeca;
 	novoLivro->prox = lista;
-	(*cab)->cabeca = (*cab)->topo;
-	(*cab)->topo += sizeof(LIVRO_BIN);
-	//gravaBin(**cab, novoLivro->arquivo);
 	printf("...\n");
 	return novoLivro;
 }

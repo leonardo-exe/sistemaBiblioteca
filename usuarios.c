@@ -9,33 +9,15 @@ USUARIO* criaListaUsuarios()
 	novaLista->prox = NULL;
 	return novaLista;
 }
-//função que grava no arquivo .bin
-static void gravaBin(CABECALHO cab, USUARIO_BIN estrutura)
-{
-	FILE* bin = fopen("usuarios.bin", "r+b");
-	if (!bin) {
-		printf("erro ao abrir arquivo 'usuarios.bin'\n");
-		return;
-	}
-	fseek(bin, 0, SEEK_SET);
-	fwrite(&cab, sizeof(CABECALHO), 1, bin);
-	fseek(bin, cab.cabeca, SEEK_SET);
-	fwrite(&estrutura, sizeof(USUARIO_BIN), 1, bin);
-	fclose(bin);
-}
 //coloca um novo usuario na lista, e grava no .bin
-USUARIO* cadastrarUsuario(CABECALHO** cab, USUARIO* lista, int cod, char* nome)
+USUARIO* cadastrarUsuario(USUARIO* lista, int cod, char* nome)
 {
 	USUARIO* novoUsuario = (USUARIO*)malloc(sizeof(USUARIO));
 	if (!novoUsuario)
 		return NULL;
 	novoUsuario->prox = lista;
 	novoUsuario->arquivo.codigo = cod;
-	novoUsuario->arquivo.prox = (*cab)->cabeca;
 	strcpy(novoUsuario->arquivo.nome, nome);
-	(*cab)->cabeca = (*cab)->topo;
-	(*cab)->topo += sizeof(USUARIO_BIN);
-	//gravaBin(**cab, novoUsuario->arquivo);
 	printf("...\n");
 	return novoUsuario;
 }
