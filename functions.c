@@ -280,7 +280,11 @@ void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lis
 void gravabin(CABECALHO* cab, void* lista, char* arquivo)
 {
 	FILE* arq = fopen(arquivo, "wb");
-	if (!arq) return;
+	if (!arq) 
+	{
+		printf("nao foi possivel abrir arquivo %s\n", arquivo);
+		return;
+	}
 	fseek(arq, 0, SEEK_SET);
 	fwrite(cab, sizeof(CABECALHO), 1, arq);
 	if (arquivo[0] == 'l') 
@@ -289,6 +293,7 @@ void gravabin(CABECALHO* cab, void* lista, char* arquivo)
 		while (aux->prox != NULL)
 		{
 			fwrite(&aux->arquivo, sizeof(LIVRO_BIN), 1, arq);
+			fseek(arq, aux->arquivo.prox, SEEK_SET);
 			aux = aux->prox;
 		}
 	}
@@ -298,6 +303,7 @@ void gravabin(CABECALHO* cab, void* lista, char* arquivo)
 		while (aux->prox != NULL)
 		{
 			fwrite(&aux->arquivo, sizeof(USUARIO_BIN), 1, arq);
+			fseek(arq, aux->arquivo.prox, SEEK_SET);
 			aux = aux->prox;
 		}
 	}
@@ -307,6 +313,7 @@ void gravabin(CABECALHO* cab, void* lista, char* arquivo)
 		while (aux->prox != NULL)
 		{
 			fwrite(&aux->arquivo, sizeof(EMPRESTIMO_BIN), 1, arq);
+			fseek(arq, aux->arquivo.prox, SEEK_SET);
 			aux = aux->prox;
 		}
 	}

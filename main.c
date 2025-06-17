@@ -60,13 +60,22 @@ int main()
 				else
 				{
 					n = atoi(digito);
-					if (!n) return;
+					if (!n) {
+						gravabin(cabL, listaLivros, "livros.bin");
+						gravabin(cabU, listaUsuarios, "usuarios.bin");
+						gravabin(cabE, listaEmprestimo, "emprestimos.bin");
+						liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
+						return;
+					}
 					break;
 				}
 			}
 			switch (n)
 			{
-			case 0: break;
+			case 0: 
+			{
+				break;
+			}
 			case 1:
 			{
 				printf("1-todos os livros\n2-buscar com codigo\n3-buscar com titulo\n4-total de livros\n");
@@ -84,7 +93,13 @@ int main()
 					else
 					{
 						num = atoi(digito);
-						if (!n) return;
+						if (!n) {
+							gravabin(cabL, listaLivros, "livros.bin");
+							gravabin(cabU, listaUsuarios, "usuarios.bin");
+							gravabin(cabE, listaEmprestimo, "emprestimos.bin");
+							liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
+							return;
+						}
 						break;
 					}
 				}
@@ -153,12 +168,22 @@ int main()
 					else
 					{
 						num = atoi(digito);
-						if (!n) return;
+						if (!n) {
+							gravabin(cabL, listaLivros, "livros.bin");
+							gravabin(cabU, listaUsuarios, "usuarios.bin");
+							gravabin(cabE, listaEmprestimo, "emprestimos.bin");
+							liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
+							return;
+						}
 						break;
 					}
 				}
 				switch (num)
 				{
+				case 0:
+				{
+					break;
+				}
 				case 1: listarUsuarios(listaUsuarios); break;
 				case 2:
 				{
@@ -218,6 +243,9 @@ int main()
 			default: printf("Digite um numero valido!!!\n");
 			}
 		} while (n);
+		gravabin(cabL, listaLivros, "livros.bin");
+		gravabin(cabU, listaUsuarios, "usuarios.bin");
+		gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 		liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
 	}
 	return 0;

@@ -34,7 +34,7 @@ LIVRO* cadastrarLivro(CABECALHO** cab, LIVRO* lista, INFO info)
 	novoLivro->prox = lista;
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(LIVRO_BIN);
-	gravaBin(**cab, novoLivro->arquivo);
+	//gravaBin(**cab, novoLivro->arquivo);
 	printf("...\n");
 	return novoLivro;
 }

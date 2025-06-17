@@ -35,7 +35,7 @@ USUARIO* cadastrarUsuario(CABECALHO** cab, USUARIO* lista, int cod, char* nome)
 	strcpy(novoUsuario->arquivo.nome, nome);
 	(*cab)->cabeca = (*cab)->topo;
 	(*cab)->topo += sizeof(USUARIO_BIN);
-	gravaBin(**cab, novoUsuario->arquivo);
+	//gravaBin(**cab, novoUsuario->arquivo);
 	printf("...\n");
 	return novoUsuario;
 }
