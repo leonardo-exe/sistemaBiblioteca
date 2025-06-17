@@ -74,9 +74,6 @@ int main()
 			{
 			case 0: 
 			{
-				gravabin(cabL, listaLivros, "livros.bin");
-				gravabin(cabU, listaUsuarios, "usuarios.bin");
-				gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 				break;
 			}
 			case 1:
@@ -185,9 +182,6 @@ int main()
 				{
 				case 0:
 				{
-					gravabin(cabL, listaLivros, "livros.bin");
-					gravabin(cabU, listaUsuarios, "usuarios.bin");
-					gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 					break;
 				}
 				case 1: listarUsuarios(listaUsuarios); break;
@@ -249,6 +243,9 @@ int main()
 			default: printf("Digite um numero valido!!!\n");
 			}
 		} while (n);
+		gravabin(cabL, listaLivros, "livros.bin");
+		gravabin(cabU, listaUsuarios, "usuarios.bin");
+		gravabin(cabE, listaEmprestimo, "emprestimos.bin");
 		liberaMemoria(cabL, cabU, cabE, listaLivros, listaUsuarios, listaEmprestimo);
 	}
 	return 0;
