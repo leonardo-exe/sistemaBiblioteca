@@ -110,6 +110,8 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 	char tipo;
 	while (fscanf(arquivo, "%c%*c", &tipo) != EOF)
 	{
+		if (tipo == ' ' || tipo == '\n')
+			continue;
 		if (tipo == 'L')
 		{
 			INFO informacoes = {0};
@@ -119,7 +121,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			readString(informacoes.editora, arquivo, tipo);
 			fscanf(arquivo, "%d%*c%d%*c%d%*c", &informacoes.edicao, &informacoes.ano, &informacoes.qtdExemplares);
 			if (!livrosRepetidos(*listaL, informacoes.titulo, informacoes.autor, informacoes.edicao, informacoes.ano, informacoes.qtdExemplares))
-				*listaL = cadastrarLivro(&(*cab1), *listaL, informacoes);
+				*listaL = cadastrarLivro(cab1, *listaL, informacoes);
 			else 
 				gravabin(*cab1, *listaL, "livros.bin");
 		}
@@ -130,7 +132,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			fscanf(arquivo, "%d%*c", &codigo);
 			readString(nome, arquivo, tipo);
 			if (!vaziaU(*listaU) || !usuariosRepetidos(*listaU, nome))
-				*listaU = cadastrarUsuario(&(*cab2), *listaU, codigo, nome);
+				*listaU = cadastrarUsuario(cab2, *listaU, codigo, nome);
 		}
 		if (tipo == 'E')
 		{
@@ -139,7 +141,7 @@ void carregaArquivotxt(char* nomeArq, LIVRO** listaL, USUARIO** listaU, EMPRESTI
 			fscanf(arquivo, "%d%*c%d%*c", &codU, &codL);
 			readString(emprestimo, arquivo, 'L');
 			readString(devolucao, arquivo, tipo);
-			*listaE = emprestartxt(&(*cab3), codU, codL, emprestimo, devolucao, *listaE);
+			*listaE = emprestartxt(cab3, codU, codL, emprestimo, devolucao, *listaE);
 		}
 	}
 	fclose(arquivo);
