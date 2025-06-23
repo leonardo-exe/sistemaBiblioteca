@@ -207,6 +207,6 @@ void liberaMemoria(CABECALHO* cab1, CABECALHO* cab2, CABECALHO* cab3, LIVRO* lis
 int livrosRepetidos(LIVRO* lista, char* titulo, char* autor, int edicao, int ano, int quantia);
 //retorna 1 caso exista usuarios repitidos, ou 0 caso contrário
 int usuariosRepetidos(USUARIO* lista, char* nome);
-//grava toda a lista no arquivo .bin, será usada quando um valor for atualizado
+//grava toda a lista no arquivo .bin, será chamada sempre antes de finalizar o programa
 void gravabin(CABECALHO* cab, void* lista, char* arquivo);
 #endif
